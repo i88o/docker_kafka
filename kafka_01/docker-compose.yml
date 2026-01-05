@@ -39,7 +39,19 @@ services:
       - zookeeper
     networks:
       - kafka-net
-   
+  kafdrop:
+    image: a_kafdrop
+    networks:
+      - kafka-net
+    container_name: kafka_ui
+    environment:
+      - KAFKA_BROKERCONNECT=kafka:9092  # 连接 Kafka Broker 服务
+      - ZOOKEEPER_CONNECT=zookeeper:2181  # ZooKeeper 服务地址  
+    ports:
+      - 9000:9000
+    depends_on:
+      - zookeeper  
+      - kafka
 
 networks:
   kafka-net:
