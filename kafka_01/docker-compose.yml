@@ -1,0 +1,46 @@
+
+
+services:
+  zookeeper:
+    image: a_zookeeper
+    container_name: zookeeper
+    environment:
+      - ALLOW_ANONYMOUS_LOGIN=yes
+    volumes:
+      - /home/user1/docker_workSpace/docker_kafka/kafka_01/data/zookeeper:/bitnami/zookeeper
+    ports:
+      - 2181:2181
+    networks:
+      - kafka-net
+    healthcheck:
+      test: ["CMD", "nc", "-z", "localhost", "2181"]
+      interval: 30s
+      retries: 3
+      start_period: 10s
+      timeout: 10s
+
+  kafka:
+    image: a_kafka
+    container_name: kafka
+    environment:
+    - KAFKA_CFG_LISTENERS=PLAINTEXT://0.0.0.0:9092,CONTROLLER://0.0.0.0:9093
+    - KAFKA_CFG_LISTENER_SECURITY_PROTOCOL_MAP=PLAINTEXT:PLAINTEXT,CONTROLLER:PLAINTEXT
+    - KAFKA_CFG_LISTENER_SECURITY_PROTOCOL=PLAINTEXT
+    - KAFKA_CFG_ADVERTISED_LISTENERS=PLAINTEXT://192.168.8.8:9092
+    - KAFKA_CFG_LISTENER_NAMES=PLAINTEXT,CONTROLLER
+    
+    - KAFKA_CFG_ZOOKEEPER_CONNECT=zookeeper:2181
+    volumes:
+      - /home/user1/docker_workSpace/docker_kafka/kafka_01/data/kafka:/bitnami/kafka
+    ports:
+      - 9092:9092
+
+    depends_on:
+      - zookeeper
+    networks:
+      - kafka-net
+   
+
+networks:
+  kafka-net:
+    driver: bridge
