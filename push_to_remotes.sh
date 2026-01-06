@@ -11,14 +11,13 @@ push_to_remote() {
   fi
 }
 
-# 推送到 GitHub
-push_to_remote github
-
-# 推送到 Gitee
+# 推送到国内仓库（优先顺序）
 push_to_remote gitee
-
-# 推送到其他远程仓库
 push_to_remote gitcode
+
+
+# 推送到国外仓库
+push_to_remote github
 push_to_remote gitlab
 push_to_remote gitea
 
